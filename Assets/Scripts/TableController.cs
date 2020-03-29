@@ -52,26 +52,27 @@ public class TableController : MonoBehaviour
                 if (f == limitHeight)   // barrier
                 {
                     tetrisTable[f, c] = -2;
-                    Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
+                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else if (f >= tableHeightSize + borders) // margin
                 {
                     tetrisTable[f, c] = -3;
-                    Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
+                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else if (f < borders || c < borders || c >= tableBaseSize + borders)   // borders
                 {
                     tetrisTable[f, c] = -1;
-                    Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
+                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else    // empty
                 {
                     tetrisTable[f, c] = 0;
-                    Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
+                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
             }
         }
         //ListTable(tetrisTable); // debug
+        Debug.Log(this.gameObject.name + " has been initialized!");
     }
 
     public Vector2Int GetTableSize()

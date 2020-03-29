@@ -10,12 +10,12 @@ public class TableBuilder : MonoBehaviour
     [SerializeField] private float boxSize = 1f;
     private int height;
     private int edge;
-    [SerializeField] private Material borderMat;
-    [SerializeField] private Material barrierMat;
-    [SerializeField] private Material marginMat;
-    [SerializeField] private Material emptyMat;
-    [SerializeField] private Material tetromino1;
-    private bool test = true;
+    [SerializeField] private Color borderColor;
+    [SerializeField] private Color barrierColor;
+    [SerializeField] private Color marginColor;
+    [SerializeField] private Color emptyColor;
+    [SerializeField] private Color tetromino1;
+    //private bool test = true;
 
     // Set up references
     void Awake()
@@ -40,8 +40,8 @@ public class TableBuilder : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (test) { RefreshTable(); test = false; }
-        //RefreshTable();
+        //if (test) { RefreshTable(); test = false; }
+        RefreshTable();
     }
 
     private void DrawNewTable()
@@ -70,28 +70,28 @@ public class TableBuilder : MonoBehaviour
             {
                 if (tableController.GetSpecificValue(f, c) == -3)
                 {
-                    boxArray[i].GetComponent<Renderer>().material = marginMat;
-                    Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is margin");
+                    boxArray[i].GetComponent<Renderer>().material.color = marginColor;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is margin");
                 }
                 else if (tableController.GetSpecificValue(f, c) == -2)
                 {
-                    boxArray[i].GetComponent<Renderer>().material = barrierMat;
-                    Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is barrier");
+                    boxArray[i].GetComponent<Renderer>().material.color = barrierColor;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is barrier");
                 }
                 else if (tableController.GetSpecificValue(f, c) == -1)
                 {
-                    boxArray[i].GetComponent<Renderer>().material = borderMat;
-                    Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is border");
+                    boxArray[i].GetComponent<Renderer>().material.color = borderColor;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is border");
                 }
                 else if (tableController.GetSpecificValue(f, c) == 0)
                 {
-                    boxArray[i].GetComponent<Renderer>().material = emptyMat;
-                    Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is empty");
+                    boxArray[i].GetComponent<Renderer>().material.color = emptyColor;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is empty");
                 }
                 else if (tableController.GetSpecificValue(f, c) == 1)
                 {
-                    boxArray[i].GetComponent<Renderer>().material = tetromino1;
-                    Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
+                    boxArray[i].GetComponent<Renderer>().material.color = tetromino1;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
                 }
                 i++;
             }

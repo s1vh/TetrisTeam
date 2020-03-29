@@ -326,8 +326,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box: {fileID: 833524940592051044, guid: 554530e0a09d21342bceb4d0164fa346, type: 3}
   boxSize: 1
-  borderMat: {fileID: 2100000, guid: fff6d8548712b0244b8c524a882e6c47, type: 2}
-  barrierMat: {fileID: 2100000, guid: 8e4d661c69e5340449bd144b932dbe8a, type: 2}
-  marginMat: {fileID: 2100000, guid: e6230e768e985d643a682bd0d02d92a2, type: 2}
-  emptyMat: {fileID: 2100000, guid: e6230e768e985d643a682bd0d02d92a2, type: 2}
-  tetromino1: {fileID: 2100000, guid: b2b6003938a3221499c2612e1a3bd679, type: 2}
+  borderColor: {r: 1, g: 0, b: 0, a: 1}
+  barrierColor: {r: 0, g: 1, b: 0, a: 1}
+  marginColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyColor: {r: 0, g: 0, b: 1, a: 0}
+  tetromino1: {r: 0, g: 0, b: 1, a: 1}
