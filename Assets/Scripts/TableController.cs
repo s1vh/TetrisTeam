@@ -13,6 +13,7 @@ public class TableController : MonoBehaviour
     private Vector2Int[,] tetrisTable;  // x --> block; y --> state static(0)/active(1)
     [SerializeField] private bool fastMode = false;
     [SerializeField] private bool testMode = false;
+    private List<int> clearedLines = new List<int>();
 
     // Set up references
     void Awake()
@@ -30,7 +31,25 @@ public class TableController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (testMode)   // during WIP only - not intended to work without abnormalities in the playable version
+        {
+            if (Input.GetKeyDown(KeyCode.T)) { SpawnTestingBlocks(); }
+        }
+    }
+
+    private void SpawnTestingBlocks()   // for testing purposes only
+    {
+        tetrisTable[10, 1] = new Vector2Int(1, 1);
+        tetrisTable[10, 2] = new Vector2Int(1, 1);
+        tetrisTable[10, 3] = new Vector2Int(1, 1);
+        tetrisTable[10, 4] = new Vector2Int(1, 1);
+        tetrisTable[10, 5] = new Vector2Int(1, 1);
+        tetrisTable[10, 6] = new Vector2Int(1, 1);
+        tetrisTable[10, 7] = new Vector2Int(1, 1);
+        tetrisTable[10, 8] = new Vector2Int(1, 1);
+        tetrisTable[10, 9] = new Vector2Int(1, 1);
+        tetrisTable[9, 10] = new Vector2Int(1, 1);
+        Debug.Log("Test blocks have been spawned!");
     }
 
     private void ListTable(int[,] table)    // DEBUG
@@ -75,20 +94,7 @@ public class TableController : MonoBehaviour
         }
         //ListTable(tetrisTable); // debug
         Debug.Log(this.gameObject.name + " has been initialized!");
-        if (testMode)   // TEST
-        {
-            tetrisTable[10, 1] = new Vector2Int(1, 1);
-            tetrisTable[10, 2] = new Vector2Int(1, 1);
-            tetrisTable[10, 3] = new Vector2Int(1, 1);
-            tetrisTable[10, 4] = new Vector2Int(1, 1);
-            tetrisTable[10, 5] = new Vector2Int(1, 1);
-            tetrisTable[10, 6] = new Vector2Int(1, 1);
-            tetrisTable[10, 7] = new Vector2Int(1, 1);
-            tetrisTable[10, 8] = new Vector2Int(1, 1);
-            tetrisTable[10, 9] = new Vector2Int(1, 1);
-            tetrisTable[9, 10] = new Vector2Int(1, 1);
-            Debug.Log("Test blocks have been spawned!");
-        }
+        if (testMode) { SpawnTestingBlocks(); }
     }
     private void StackTetrominoes()
     {
@@ -100,11 +106,13 @@ public class TableController : MonoBehaviour
             }
         }
         Debug.Log("Active tetromino has been stacked!");
+        ClearLines();   // WIP: manage score here!!!
         // -summon new tetromino at ceiling-
     }
 
-    private int CleanLines()
+    private int ClearLines()
     {
+        Debug.Log("Trying to clear lines on " + this.gameObject.name + "...");
         int lines = 0;
         for (int f = borders; f < tableHeightSize + borders; f++)
         {
@@ -119,8 +127,8 @@ public class TableController : MonoBehaviour
                 {
                     if (tetrisTable[f, c].y == 0) { tetrisTable[f, c] = new Vector2Int(0, -1); }
                 }
-                Debug.Log("Line cleared on file: " + f + " !");
-                PushDown(f + 1);
+                Debug.Log("Line cleared on file #" + f);
+                clearedLines.Add(f + 1);
                 f = borders;
                 lines++;
             }
@@ -138,7 +146,7 @@ public class TableController : MonoBehaviour
             {
                 if (tetrisTable[f, c].y == 0)
                 {
-                    tetrisTable[f - 1, c] = tetrisTable[f, c];
+                    tetrisTable[f - 1, c] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
                     tetrisTable[f, c] = new Vector2Int(0, -1);
                     stop = false;
                     pushed = true;
@@ -149,63 +157,80 @@ public class TableController : MonoBehaviour
         return pushed;
     }
 
-    public bool MoveDown()
+    public bool MoveDown(bool auto)
     {
-        bool moved = true;
-        for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
+        if (clearedLines.Count == 0)
         {
-            for (int c = borders; c < tableBaseSize + borders; c++)
-            {
-                if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
-                {
-                    moved = false;
-                    break;
-                }
-            }
-        }
-        if (moved)
-        {
-            for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+            bool moved = true;
+            for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
             {
                 for (int c = borders; c < tableBaseSize + borders; c++)
                 {
-                    if (moved)
+                    if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
                     {
-                        tetrisTable[f - 1, c] = tetrisTable[f, c];
-                        tetrisTable[f, c] = new Vector2Int(0, -1);
-                    }
-                    else
-                    {
-                        tetrisTable[f, c].y = 0;
+                        moved = false;
+                        break;
                     }
                 }
             }
-            if (fastMode)   // use this only for autostacking when touching the floor, without waiting for next time steep
+            if (moved)
             {
-                for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
+                for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
                 {
                     for (int c = borders; c < tableBaseSize + borders; c++)
                     {
-                        if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
+                        if (tetrisTable[f, c].y > 0)
                         {
-                            moved = false;
-                            break;
+                            if (moved)
+                            {
+                                tetrisTable[f - 1, c] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
+                                tetrisTable[f, c] = new Vector2Int(0, -1);
+                            }
+                            else
+                            {
+                                tetrisTable[f, c].y = 0;
+                            }
                         }
                     }
                 }
-                if (!moved)
+                if (fastMode)   // use this only for autostacking when touching the floor, without waiting for next time steep
                 {
-                    StackTetrominoes();
+                    for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
+                    {
+                        for (int c = borders; c < tableBaseSize + borders; c++)
+                        {
+                            if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
+                            {
+                                moved = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!moved)
+                    {
+                        StackTetrominoes();
+                    }
                 }
             }
+            else
+            {
+                Debug.Log("Active tetromino can't move down!");
+                // -play blocking/stacking sound here-
+                StackTetrominoes();
+            }
+            return moved;
         }
-        else
+        else if (auto)
         {
-            Debug.Log("Active tetromino can't move down!");
-            // -play blocking/stacking sound here-
-            StackTetrominoes();
+            int n = 0;
+            foreach (int l in clearedLines)
+            {
+                PushDown(l - n);
+                n++;
+            }
+            clearedLines.Clear();
         }
-        return moved;
+        return false;
     }
 
     public Vector2Int GetTableSize()

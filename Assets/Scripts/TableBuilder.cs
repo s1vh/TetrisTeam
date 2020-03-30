@@ -15,7 +15,6 @@ public class TableBuilder : MonoBehaviour
     [SerializeField] private Color marginColor;
     [SerializeField] private Color emptyColor;
     [SerializeField] private Color tetromino1;
-    //private bool test = true;
 
     // Set up references
     void Awake()
@@ -29,7 +28,6 @@ public class TableBuilder : MonoBehaviour
         boxArray = new GameObject[tableController.GetTableSize().x * tableController.GetTableSize().y];
         box.transform.localScale = new Vector3(boxSize, boxSize, boxSize);
         DrawNewTable();
-        //RefreshTable();
     }
 
     // Update is called once per frame
@@ -40,7 +38,6 @@ public class TableBuilder : MonoBehaviour
 
     private void LateUpdate()
     {
-        //if (test) { RefreshTable(); test = false; }
         RefreshTable();
     }
 

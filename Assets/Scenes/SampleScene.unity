@@ -273,6 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1550595360}
   - component: {fileID: 1550595361}
+  - component: {fileID: 1550595362}
   - component: {fileID: 1550595359}
   m_Layer: 0
   m_Name: Table
@@ -299,7 +300,7 @@ MonoBehaviour:
   upperMargin: 4
   InitCeilingPosition: 10
   fastMode: 0
-  testMode: 0
+  testMode: 1
 --- !u!4 &1550595360
 Transform:
   m_ObjectHideFlags: 0
@@ -333,3 +334,27 @@ MonoBehaviour:
   marginColor: {r: 0, g: 0, b: 0, a: 0}
   emptyColor: {r: 0, g: 1, b: 0, a: 0}
   tetromino1: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &1550595362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1550595358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aede9550ce5736478d948d1407ed693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  running: 0
+  score: 0
+  FixedDifficultyMode: 1
+  lineGoal: 10
+  scoreGoal: {x: 1000, y: 2}
+  lineCounter: 0
+  startingTimeSteep: 1
+  currentTimeSteep: 0
+  difficutyFactor: 0.75
+  pointsPerLine: {x: 100, y: 1.25}
+  pointsPerBonus: {x: 1.1, y: 2}
+  bonusCounter: 0
