@@ -68,27 +68,27 @@ public class TableBuilder : MonoBehaviour
         {
             for (int c = 0; c < edge; c++)
             {
-                if (tableController.GetSpecificValue(f, c) == -3)
+                if (tableController.GetSpecificValue(f, c).x == -3)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = marginColor;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is margin");
                 }
-                else if (tableController.GetSpecificValue(f, c) == -2)
+                else if (tableController.GetSpecificValue(f, c).x == -2)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = barrierColor;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is barrier");
                 }
-                else if (tableController.GetSpecificValue(f, c) == -1)
+                else if (tableController.GetSpecificValue(f, c).x == -1)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = borderColor;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is border");
                 }
-                else if (tableController.GetSpecificValue(f, c) == 0)
+                else if (tableController.GetSpecificValue(f, c).x == 0)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = emptyColor;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is empty");
                 }
-                else if (tableController.GetSpecificValue(f, c) == 1)
+                else if (tableController.GetSpecificValue(f, c).x == 1)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = tetromino1;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");

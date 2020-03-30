@@ -10,7 +10,8 @@ public class TableController : MonoBehaviour
     [SerializeField] private int upperMargin = 4;
     [SerializeField] private int limitInitPosition = 10;
     private int limitHeight;
-    private int[,] tetrisTable;
+    private Vector2Int[,] tetrisTable;  // x --> block; y --> state static(0)/active(1)
+    [SerializeField] private bool testMode = false;
 
     // Set up references
     void Awake()
@@ -44,35 +45,129 @@ public class TableController : MonoBehaviour
 
     private void InitTable()
     {
-        tetrisTable = new int[tableHeightSize + borders + upperMargin, tableBaseSize + borders * 2];
+        tetrisTable = new Vector2Int[tableHeightSize + borders + upperMargin, tableBaseSize + borders * 2];
         for (int f = 0; f < tableHeightSize + borders + upperMargin; f++)
         {
             for (int c = 0; c < tableBaseSize + borders * 2; c++)
             {
                 if (f == limitHeight)   // barrier
                 {
-                    tetrisTable[f, c] = -2;
+                    tetrisTable[f, c] = new Vector2Int(-2, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else if (f >= tableHeightSize + borders) // margin
                 {
-                    tetrisTable[f, c] = -3;
+                    tetrisTable[f, c] = new Vector2Int(-3, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else if (f < borders || c < borders || c >= tableBaseSize + borders)   // borders
                 {
-                    tetrisTable[f, c] = -1;
+                    tetrisTable[f, c] = new Vector2Int(-1, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
                 else    // empty
                 {
-                    tetrisTable[f, c] = 0;
+                    tetrisTable[f, c] = new Vector2Int(0, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
             }
         }
         //ListTable(tetrisTable); // debug
         Debug.Log(this.gameObject.name + " has been initialized!");
+        if (testMode)   // TEST
+        {
+            tetrisTable[10, 1] = new Vector2Int(1, 1);
+            tetrisTable[10, 2] = new Vector2Int(1, 1);
+            tetrisTable[10, 3] = new Vector2Int(1, 1);
+            tetrisTable[10, 4] = new Vector2Int(1, 1);
+            tetrisTable[10, 5] = new Vector2Int(1, 1);
+            tetrisTable[10, 6] = new Vector2Int(1, 1);
+            tetrisTable[10, 7] = new Vector2Int(1, 1);
+            tetrisTable[10, 8] = new Vector2Int(1, 1);
+            tetrisTable[10, 9] = new Vector2Int(1, 1);
+            tetrisTable[9, 10] = new Vector2Int(1, 1);
+            Debug.Log("Test blocks have been spawned!");
+        }
+    }
+
+    private int CleanLines()
+    {
+        int lines = 0;
+        for (int f = borders; f < tableHeightSize + borders; f++)
+        {
+            bool clean = true;
+            for (int c = borders; c < tableBaseSize + borders; c++)
+            {
+                if (tetrisTable[f, c].x < 1) { clean = false; }
+            }
+            if (clean)
+            {
+                for (int c = borders; c < tableBaseSize + borders; c++)
+                {
+                    if (tetrisTable[f, c].y == 0) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                }
+                Debug.Log("Line cleared on file: " + f + " !");
+                PushDown(f + 1);
+                f = borders;
+                lines++;
+            }
+        }
+        return lines;
+    }
+
+    private bool PushDown(int height)
+    {
+        bool pushed = false;
+        for (int f = height; f < tableHeightSize + borders; f++)
+        {
+            bool stop = true;
+            for (int c = borders; c < tableBaseSize + borders; c++)
+            {
+                if (tetrisTable[f, c].y == 0)
+                {
+                    tetrisTable[f - 1, c] = tetrisTable[f, c];
+                    tetrisTable[f, c] = new Vector2Int(0, -1);
+                    stop = false;
+                    pushed = true;
+                }
+            }
+            if (stop) { return pushed; }
+        }
+        return pushed;
+    }
+
+    public bool MoveDown()
+    {
+        bool moved = true;
+        for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+        {
+            for (int c = borders; c < tableBaseSize + borders; c++)
+            {
+                if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
+                {
+                    moved = false;
+                }
+            }
+        }
+        if (moved)
+        {
+            for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+            {
+                for (int c = borders; c < tableBaseSize + borders; c++)
+                {
+                    if (moved)
+                    {
+                        tetrisTable[f - 1, c] = tetrisTable[f, c];
+                        tetrisTable[f, c] = new Vector2Int(0, -1);
+                    }
+                    else
+                    {
+                        tetrisTable[f, c].y = 0;
+                    }
+                }
+            }
+        }
+        return moved;
     }
 
     public Vector2Int GetTableSize()
@@ -81,7 +176,7 @@ public class TableController : MonoBehaviour
         return output;
     }
 
-    public int GetSpecificValue(int f, int c)
+    public Vector2Int GetSpecificValue(int f, int c)
     {
         return tetrisTable[f, c];
     }
