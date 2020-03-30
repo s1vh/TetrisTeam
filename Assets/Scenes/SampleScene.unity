@@ -297,7 +297,7 @@ MonoBehaviour:
   tableBaseSize: 10
   borders: 1
   upperMargin: 4
-  limitInitPosition: 10
+  InitCeilingPosition: 10
   testMode: 0
 --- !u!4 &1550595360
 Transform:
@@ -327,8 +327,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box: {fileID: 833524940592051044, guid: 554530e0a09d21342bceb4d0164fa346, type: 3}
   boxSize: 1
-  borderColor: {r: 1, g: 0, b: 0, a: 1}
-  barrierColor: {r: 0, g: 1, b: 0, a: 1}
+  borderColor: {r: 0, g: 0, b: 1, a: 1}
+  barrierColor: {r: 1, g: 0, b: 0, a: 1}
   marginColor: {r: 0, g: 0, b: 0, a: 0}
-  emptyColor: {r: 0, g: 0, b: 1, a: 0}
-  tetromino1: {r: 0, g: 0, b: 1, a: 1}
+  emptyColor: {r: 0, g: 1, b: 0, a: 0}
+  tetromino1: {r: 0, g: 1, b: 0, a: 1}

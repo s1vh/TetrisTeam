@@ -8,8 +8,8 @@ public class TableController : MonoBehaviour
     [SerializeField] private int tableBaseSize = 10;
     [SerializeField] private int borders = 1;
     [SerializeField] private int upperMargin = 4;
-    [SerializeField] private int limitInitPosition = 10;
-    private int limitHeight;
+    [SerializeField] private int InitCeilingPosition = 10;
+    private int ceiling;
     private Vector2Int[,] tetrisTable;  // x --> block; y --> state static(0)/active(1)
     [SerializeField] private bool testMode = false;
 
@@ -22,7 +22,7 @@ public class TableController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        limitHeight = limitInitPosition + borders;
+        ceiling = InitCeilingPosition + borders;
         InitTable();
     }
 
@@ -50,12 +50,7 @@ public class TableController : MonoBehaviour
         {
             for (int c = 0; c < tableBaseSize + borders * 2; c++)
             {
-                if (f == limitHeight)   // barrier
-                {
-                    tetrisTable[f, c] = new Vector2Int(-2, -1);
-                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
-                }
-                else if (f >= tableHeightSize + borders) // margin
+                if (f >= tableHeightSize + borders)                                     // margin
                 {
                     tetrisTable[f, c] = new Vector2Int(-3, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
@@ -65,7 +60,12 @@ public class TableController : MonoBehaviour
                     tetrisTable[f, c] = new Vector2Int(-1, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
-                else    // empty
+                else if (f >= ceiling)                                                  // current ceiling
+                {
+                    tetrisTable[f, c] = new Vector2Int(-2, -1);
+                    //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
+                }
+                else                                                                    // empty
                 {
                     tetrisTable[f, c] = new Vector2Int(0, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
