@@ -298,6 +298,7 @@ MonoBehaviour:
   borders: 1
   upperMargin: 4
   InitCeilingPosition: 10
+  fastMode: 0
   testMode: 0
 --- !u!4 &1550595360
 Transform:

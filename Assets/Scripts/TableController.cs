@@ -11,6 +11,7 @@ public class TableController : MonoBehaviour
     [SerializeField] private int InitCeilingPosition = 10;
     private int ceiling;
     private Vector2Int[,] tetrisTable;  // x --> block; y --> state static(0)/active(1)
+    [SerializeField] private bool fastMode = false;
     [SerializeField] private bool testMode = false;
 
     // Set up references
@@ -89,6 +90,18 @@ public class TableController : MonoBehaviour
             Debug.Log("Test blocks have been spawned!");
         }
     }
+    private void StackTetrominoes()
+    {
+        for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+        {
+            for (int c = borders; c < tableBaseSize + borders; c++)
+            {
+                if (tetrisTable[f, c].x > 0) { tetrisTable[f, c].y = 0; }
+            }
+        }
+        Debug.Log("Active tetromino has been stacked!");
+        // -summon new tetromino at ceiling-
+    }
 
     private int CleanLines()
     {
@@ -139,13 +152,14 @@ public class TableController : MonoBehaviour
     public bool MoveDown()
     {
         bool moved = true;
-        for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+        for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
         {
             for (int c = borders; c < tableBaseSize + borders; c++)
             {
                 if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
                 {
                     moved = false;
+                    break;
                 }
             }
         }
@@ -166,6 +180,30 @@ public class TableController : MonoBehaviour
                     }
                 }
             }
+            if (fastMode)   // use this only for autostacking when touching the floor, without waiting for next time steep
+            {
+                for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
+                {
+                    for (int c = borders; c < tableBaseSize + borders; c++)
+                    {
+                        if (tetrisTable[f, c].y == 1 && tetrisTable[f - 1, c].x != 0)
+                        {
+                            moved = false;
+                            break;
+                        }
+                    }
+                }
+                if (!moved)
+                {
+                    StackTetrominoes();
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Active tetromino can't move down!");
+            // -play blocking/stacking sound here-
+            StackTetrominoes();
         }
         return moved;
     }
