@@ -29,7 +29,7 @@ public class TableBuilder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        boxArray = new GameObject[tableController.GetTableSize().x * tableController.GetTableSize().y];
+        boxArray = new GameObject[tableController.GetFullTableSize().x * tableController.GetFullTableSize().y];
         box.transform.localScale = new Vector3(boxSize, boxSize, boxSize);
         DrawNewTable();
     }
@@ -48,8 +48,8 @@ public class TableBuilder : MonoBehaviour
     private void DrawNewTable()
     {
         Vector3 anchor = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
-        height = tableController.GetTableSize().x;
-        edge = tableController.GetTableSize().y;
+        height = tableController.GetFullTableSize().x;
+        edge = tableController.GetFullTableSize().y;
         int i = 0;
         for (int f = 0; f < height; f++)
         {

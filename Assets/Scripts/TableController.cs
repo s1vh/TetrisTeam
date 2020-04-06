@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TableController : MonoBehaviour
 {
+    TetrominoBuilder tetrominoBuilder;
     [SerializeField] private int tableHeightSize = 20;
     [SerializeField] private int tableBaseSize = 10;
     [SerializeField] private int borders = 1;
@@ -18,7 +19,7 @@ public class TableController : MonoBehaviour
     // Set up references
     void Awake()
     {
-
+        tetrominoBuilder = this.gameObject.GetComponent<TetrominoBuilder>();
     }
 
     // Start is called before the first frame update
@@ -35,11 +36,11 @@ public class TableController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X)) { ClearTable(); }
             else if (Input.GetKeyDown(KeyCode.T)) { SpawnTestingBlocks(); }
-            else if (Input.GetKeyDown(KeyCode.Alpha1)) { SpawnTetromino(1); }
-            else if (Input.GetKeyDown(KeyCode.Alpha2)) { SpawnTetromino(2); }
-            else if (Input.GetKeyDown(KeyCode.Alpha3)) { SpawnTetromino(3); }
-            else if (Input.GetKeyDown(KeyCode.Alpha4)) { SpawnTetromino(4); }
-            else if (Input.GetKeyDown(KeyCode.Alpha5)) { SpawnTetromino(5); }
+            else if (Input.GetKeyDown(KeyCode.Alpha1)) { tetrominoBuilder.SpawnTetromino(1); }
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) { tetrominoBuilder.SpawnTetromino(2); }
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) { tetrominoBuilder.SpawnTetromino(3); }
+            else if (Input.GetKeyDown(KeyCode.Alpha4)) { tetrominoBuilder.SpawnTetromino(4); }
+            else if (Input.GetKeyDown(KeyCode.Alpha5)) { tetrominoBuilder.SpawnTetromino(5); }
         }
     }
 
@@ -74,77 +75,6 @@ public class TableController : MonoBehaviour
         tetrisTable[10, 9] = new Vector2Int(1, 1);
         tetrisTable[9, 10] = new Vector2Int(1, 1);
         Debug.Log("Test blocks have been spawned!");
-    }
-
-    private bool SpawnTetromino(int n)  // if false is game over!!
-    {
-        bool check = true;
-        int f = ceiling;
-        int c = borders + Mathf.FloorToInt(tableBaseSize * 0.5f) - 1;
-        if (tetrisTable[f, c].y == 0) { check = false; }
-        else
-        {
-            switch (n)  // TETROMINO BUILDER
-            {
-                case 1:
-                    if (tetrisTable[f, c].y == 0 || tetrisTable[f + 1, c].y == 0 || tetrisTable[f + 2, c].y == 0 || tetrisTable[f + 3, c].y == 0) { check = false; }
-                    else
-                    {
-                        tetrisTable[f, c]           = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c]       = new Vector2Int(n, 1);
-                        tetrisTable[f + 2, c]       = new Vector2Int(n, 1);
-                        tetrisTable[f + 3, c]       = new Vector2Int(n, 1);
-                    }
-                    break;
-
-                case 2:
-                    if (tetrisTable[f, c].y == 0 || tetrisTable[f + 1, c].y == 0 || tetrisTable[f, c + 1].y == 0 || tetrisTable[f + 1, c + 1].y == 0) { check = false; }
-                    else
-                    {
-                        tetrisTable[f, c]           = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c]       = new Vector2Int(n, 1);
-                        tetrisTable[f, c + 1]       = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c + 1]   = new Vector2Int(n, 1);
-                    }
-                    break;
-
-                case 3:
-                    if (tetrisTable[f, c].y == 0 || tetrisTable[f + 1, c].y == 0 || tetrisTable[f + 1, c - 1].y == 0 || tetrisTable[f + 1, c + 1].y == 0) { check = false; }
-                    else
-                    {
-                        tetrisTable[f, c]           = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c]       = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c - 1]   = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c + 1]   = new Vector2Int(n, 1);
-                    }
-                    break;
-
-                case 4:
-                    if (tetrisTable[f, c].y == 0 || tetrisTable[f + 1, c].y == 0 || tetrisTable[f + 1, c - 1].y == 0 || tetrisTable[f, c + 1].y == 0) { check = false; }
-                    else
-                    {
-                        tetrisTable[f, c]           = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c]       = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c - 1]   = new Vector2Int(n, 1);
-                        tetrisTable[f, c + 1]       = new Vector2Int(n, 1);
-                    }
-                    break;
-
-                case 5:
-                    if (tetrisTable[f, c].y == 0 || tetrisTable[f + 1, c].y == 0 || tetrisTable[f, c - 1].y == 0 || tetrisTable[f + 1, c + 1].y == 0) { check = false; }
-                    else
-                    {
-                        tetrisTable[f, c] = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c] = new Vector2Int(n, 1);
-                        tetrisTable[f, c - 1] = new Vector2Int(n, 1);
-                        tetrisTable[f + 1, c + 1] = new Vector2Int(n, 1);
-                    }
-                    break;
-            }
-        }
-        if (check) { Debug.Log("Tetromino (" + n + ") has been spawned!"); }
-        else { Debug.Log("There's no space to draw tetromino (" + n + ")"); }
-        return check;
     }
 
     private void ListTable(int[,] table)    // DEBUG
@@ -203,7 +133,7 @@ public class TableController : MonoBehaviour
         Debug.Log("Active tetromino has been stacked!");
         ClearLines();   // WIP: manage score here!!!
         // -summon new tetromino at ceiling-
-        if (testMode) { SpawnTetromino(Random.Range(1, 6)); }
+        if (testMode) { tetrominoBuilder.SpawnTetromino(0); }
     }
 
     private int ClearLines()
@@ -330,7 +260,17 @@ public class TableController : MonoBehaviour
         return false;
     }
 
-    public Vector2Int GetTableSize()
+    public Vector2Int[,] GetTable()
+    {
+        return tetrisTable;
+    }
+
+    public Vector3Int GetTableData()
+    {
+        return new Vector3Int(ceiling, borders, tableBaseSize);
+    }
+
+    public Vector2Int GetFullTableSize()
     {
         Vector2Int output = new Vector2Int(tableHeightSize + borders + upperMargin, tableBaseSize + borders * 2);
         return output;

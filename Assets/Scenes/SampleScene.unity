@@ -330,15 +330,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box: {fileID: 833524940592051044, guid: 554530e0a09d21342bceb4d0164fa346, type: 3}
   boxSize: 1
-  borderColor: {r: 0, g: 0, b: 1, a: 1}
-  barrierColor: {r: 1, g: 0, b: 0, a: 1}
+  borderColor: {r: 0, g: 0, b: 0.5372549, a: 1}
+  barrierColor: {r: 0.49803922, g: 0, b: 0, a: 1}
   marginColor: {r: 0, g: 0, b: 0, a: 0}
   emptyColor: {r: 0, g: 1, b: 0, a: 0}
-  tetromino1: {r: 0, g: 1, b: 0, a: 1}
-  tetromino2: {r: 0, g: 1, b: 0, a: 1}
-  tetromino3: {r: 0, g: 1, b: 0, a: 1}
-  tetromino4: {r: 0, g: 1, b: 0, a: 1}
-  tetromino5: {r: 0, g: 1, b: 0, a: 1}
+  tetromino1: {r: 0, g: 1, b: 0.8721261, a: 1}
+  tetromino2: {r: 1, g: 0.40701026, b: 0, a: 1}
+  tetromino3: {r: 0.72156864, g: 0.14117648, b: 1, a: 1}
+  tetromino4: {r: 1, g: 0.14509805, b: 0.13333334, a: 1}
+  tetromino5: {r: 0, g: 0.2509804, b: 0.79607844, a: 1}
 --- !u!114 &1550595362
 MonoBehaviour:
   m_ObjectHideFlags: 0
