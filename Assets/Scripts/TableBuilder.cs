@@ -15,6 +15,10 @@ public class TableBuilder : MonoBehaviour
     [SerializeField] private Color marginColor;
     [SerializeField] private Color emptyColor;
     [SerializeField] private Color tetromino1;
+    [SerializeField] private Color tetromino2;
+    [SerializeField] private Color tetromino3;
+    [SerializeField] private Color tetromino4;
+    [SerializeField] private Color tetromino5;
 
     // Set up references
     void Awake()
@@ -88,6 +92,26 @@ public class TableBuilder : MonoBehaviour
                 else if (tableController.GetSpecificValue(f, c).x == 1)
                 {
                     boxArray[i].GetComponent<Renderer>().material.color = tetromino1;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
+                }
+                else if (tableController.GetSpecificValue(f, c).x == 2)
+                {
+                    boxArray[i].GetComponent<Renderer>().material.color = tetromino2;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
+                }
+                else if (tableController.GetSpecificValue(f, c).x == 3)
+                {
+                    boxArray[i].GetComponent<Renderer>().material.color = tetromino3;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
+                }
+                else if (tableController.GetSpecificValue(f, c).x == 4)
+                {
+                    boxArray[i].GetComponent<Renderer>().material.color = tetromino4;
+                    //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
+                }
+                else if (tableController.GetSpecificValue(f, c).x == 5)
+                {
+                    boxArray[i].GetComponent<Renderer>().material.color = tetromino5;
                     //Debug.Log("Box (" + f + "," + c + ") is Cube " + (i) + " and is tetromino");
                 }
                 i++;

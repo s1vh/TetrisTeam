@@ -273,8 +273,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1550595360}
   - component: {fileID: 1550595361}
-  - component: {fileID: 1550595362}
+  - component: {fileID: 1550595363}
   - component: {fileID: 1550595359}
+  - component: {fileID: 1550595362}
   m_Layer: 0
   m_Name: Table
   m_TagString: Untagged
@@ -334,6 +335,10 @@ MonoBehaviour:
   marginColor: {r: 0, g: 0, b: 0, a: 0}
   emptyColor: {r: 0, g: 1, b: 0, a: 0}
   tetromino1: {r: 0, g: 1, b: 0, a: 1}
+  tetromino2: {r: 0, g: 1, b: 0, a: 1}
+  tetromino3: {r: 0, g: 1, b: 0, a: 1}
+  tetromino4: {r: 0, g: 1, b: 0, a: 1}
+  tetromino5: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &1550595362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,3 +363,15 @@ MonoBehaviour:
   pointsPerLine: {x: 100, y: 1.25}
   pointsPerBonus: {x: 1.1, y: 2}
   bonusCounter: 0
+--- !u!114 &1550595363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1550595358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d87b50451f3592459ea33554a514cde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
