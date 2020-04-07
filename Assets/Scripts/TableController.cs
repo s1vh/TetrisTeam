@@ -11,7 +11,7 @@ public class TableController : MonoBehaviour
     [SerializeField] private int upperMargin = 4;
     [SerializeField] private int InitCeilingPosition = 10;
     private int ceiling;
-    private Vector2Int[,] tetrisTable;  // x --> block; y --> state static(0)/active(1)
+    private Vector2Int[,] tetrisTable;  // x --> block; y --> state other(-1)/static(0)/active(1)
     [SerializeField] private bool fastMode = false;
     [SerializeField] private bool testMode = false;
     private List<int> clearedLines = new List<int>();
@@ -34,7 +34,11 @@ public class TableController : MonoBehaviour
     {
         if (testMode)   // during WIP only - not intended to work without abnormalities in the playable version
         {
-            if (Input.GetKeyDown(KeyCode.X)) { ClearTable(); }
+            if (Input.GetKeyDown(KeyCode.DownArrow)) { MoveDown(false); }
+            else if (Input.GetKeyDown(KeyCode.UpArrow)) { MoveUp(); }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) { MoveLeft(); }
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) { MoveRight(); }
+            else if (Input.GetKeyDown(KeyCode.X)) { ClearTable(); }
             else if (Input.GetKeyDown(KeyCode.T)) { SpawnTestingBlocks(); }
             else if (Input.GetKeyDown(KeyCode.Alpha1)) { tetrominoBuilder.SpawnTetromino(1); }
             else if (Input.GetKeyDown(KeyCode.Alpha2)) { tetrominoBuilder.SpawnTetromino(2); }
@@ -95,22 +99,26 @@ public class TableController : MonoBehaviour
         {
             for (int c = 0; c < tableBaseSize + borders * 2; c++)
             {
-                if (f >= ceiling)                                                       // current ceiling
+                //  CEILING
+                if (f >= ceiling)
                 {
                     tetrisTable[f, c] = new Vector2Int(-2, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
-                else if (f >= tableHeightSize + borders)                                // margin
+                //  MARGIN
+                else if (f >= tableHeightSize + borders)
                 {
                     tetrisTable[f, c] = new Vector2Int(-3, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
-                else if (f < borders || c < borders || c >= tableBaseSize + borders)   // borders
+                //  BORDERS
+                else if (f < borders || c < borders || c >= tableBaseSize + borders)
                 {
                     tetrisTable[f, c] = new Vector2Int(-1, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
                 }
-                else                                                                    // empty
+                //  EMPTY
+                else
                 {
                     tetrisTable[f, c] = new Vector2Int(0, -1);
                     //Debug.Log("Box(" + f + "," + c + ") values is " + tetrisTable[f, c]);
@@ -127,13 +135,13 @@ public class TableController : MonoBehaviour
         {
             for (int c = borders; c < tableBaseSize + borders; c++)
             {
-                if (tetrisTable[f, c].x > 0) { tetrisTable[f, c].y = 0; }
+                if (tetrisTable[f, c].x > 0) { tetrisTable[f, c].y = 0; } // WIP -also check GAME OVER condition HERE-
             }
         }
         Debug.Log("Active tetromino has been stacked!");
-        ClearLines();   // WIP: manage score here!!!
-        // -summon new tetromino at ceiling-
-        if (testMode) { tetrominoBuilder.SpawnTetromino(0); }
+        ClearLines();                                           // WIP: manage score here!!! (catch the returning int)
+        if (testMode) { tetrominoBuilder.SpawnTetromino(0); }   // for testing purposes only!
+        // if (ClearLines() > 0) {etc.} else { tetrominoBuilder.SpawnTetromino(0); }
     }
 
     private int ClearLines()
@@ -151,36 +159,35 @@ public class TableController : MonoBehaviour
             {
                 for (int c = borders; c < tableBaseSize + borders; c++)
                 {
-                    if (tetrisTable[f, c].y == 0) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                    if (tetrisTable[f, c].y == 0)
+                    {
+                        if (f < ceiling) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                        else { tetrisTable[f, c] = new Vector2Int(-2, -1); }
+                    }
                 }
                 Debug.Log("Line cleared on file #" + f);
-                clearedLines.Add(f + 1);
+                clearedLines.Add(f);
                 f = borders;
                 lines++;
             }
         }
-        return lines;
+        return lines;   // this is the number of lines cleared at once! (it matters for the score)
     }
 
-    private bool PushDown(int height)
+    private void PushDown(int height)   // push all stacked blocks down
     {
-        bool pushed = false;
-        for (int f = height; f < tableHeightSize + borders + upperMargin; f++)
+        for (int f = height; f < tableHeightSize + borders; f++)
         {
-            bool stop = true;
             for (int c = borders; c < tableBaseSize + borders; c++)
             {
                 if (tetrisTable[f, c].y == 0)
                 {
                     tetrisTable[f - 1, c] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
-                    tetrisTable[f, c] = new Vector2Int(0, -1);
-                    stop = false;
-                    pushed = true;
+                    if (f < ceiling) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                    else { tetrisTable[f, c] = new Vector2Int(-2, -1); }
                 }
             }
-            if (stop) { return pushed; }
         }
-        return pushed;
     }
 
     public bool MoveDown(bool auto)
@@ -247,15 +254,170 @@ public class TableController : MonoBehaviour
             }
             return moved;
         }
-        else if (auto)
+        else
         {
             int n = 0;
-            foreach (int l in clearedLines)
+            foreach (int line in clearedLines)
             {
-                PushDown(l - n);
+                PushDown(line - n);
                 n++;
             }
             clearedLines.Clear();
+        }
+        return false;
+    }
+
+    public bool MoveUp()
+    {
+        if (clearedLines.Count == 0)
+        {
+            bool moved = true;
+            for (int f = tableHeightSize + borders + upperMargin - 1; f >= borders && moved; f--)
+            {
+                for (int c = tableBaseSize + borders - 1; c >= borders; c--)
+                {
+                    if (f + 1 <= tableHeightSize + borders + upperMargin - 1)
+                    {
+                        if (tetrisTable[f, c].y == 1 && (tetrisTable[f + 1, c].x == -1 || tetrisTable[f + 1, c].y == 0))
+                        {
+                            moved = false;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (tetrisTable[f, c].y == 1)
+                        {
+                            moved = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (moved)
+            {
+                for (int f = tableHeightSize + borders + upperMargin - 1; f >= borders && moved; f--)
+                {
+                    for (int c = tableBaseSize + borders - 1; c >= borders; c--)
+                    {
+                        if (tetrisTable[f, c].y > 0)
+                        {
+                            if (moved)
+                            {
+                                tetrisTable[f + 1, c] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
+                                if (f < ceiling) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                                else { tetrisTable[f, c] = new Vector2Int(-2, -1); }
+                            }
+                            else
+                            {
+                                tetrisTable[f, c].y = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Active tetromino can't move up!");
+                // -play blocking/stacking sound here-
+            }
+            return moved;
+        }
+        return false;
+    }
+
+    public bool MoveLeft()
+    {
+        if (clearedLines.Count == 0)
+        {
+            bool moved = true;
+            for (int f = borders; f < tableHeightSize + borders + upperMargin && moved; f++)
+            {
+                for (int c = borders; c < tableBaseSize + borders; c++)
+                {
+                    if (tetrisTable[f, c].y == 1 && (tetrisTable[f, c - 1].x == -1 || tetrisTable[f, c - 1].y == 0 || c <= borders))
+                    {
+                        moved = false;
+                        break;
+                    }
+                }
+            }
+            if (moved)
+            {
+                for (int f = borders; f < tableHeightSize + borders + upperMargin; f++)
+                {
+                    for (int c = borders; c < tableBaseSize + borders; c++)
+                    {
+                        if (tetrisTable[f, c].y > 0)
+                        {
+                            if (moved)
+                            {
+                                tetrisTable[f, c - 1] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
+                                if (f < ceiling) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                                else { tetrisTable[f, c] = new Vector2Int(-2, -1); }
+                            }
+                            else
+                            {
+                                tetrisTable[f, c].y = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Active tetromino can't move left!");
+                // -play blocking/stacking sound here-
+            }
+            return moved;
+        }
+        return false;
+    }
+
+    public bool MoveRight()
+    {
+        if (clearedLines.Count == 0)
+        {
+            bool moved = true;
+            for (int f = tableHeightSize + borders + upperMargin - 1; f >= borders && moved; f--)
+            {
+                for (int c = tableBaseSize + borders - 1; c >= borders; c--)
+                {
+                    if (tetrisTable[f, c].y == 1 && (tetrisTable[f, c + 1].x == -1 || tetrisTable[f, c + 1].y == 0 || c >= tableBaseSize + borders - 1))
+                    {
+                        moved = false;
+                        break;
+                    }
+                }
+            }
+            if (moved)
+            {
+                for (int f = tableHeightSize + borders + upperMargin - 1; f >= borders && moved; f--)
+                {
+                    for (int c = tableBaseSize + borders - 1; c >= borders; c--)
+                    {
+                        if (tetrisTable[f, c].y > 0)
+                        {
+                            if (moved)
+                            {
+                                tetrisTable[f, c + 1] = new Vector2Int(tetrisTable[f, c].x, tetrisTable[f, c].y);
+                                if (f < ceiling) { tetrisTable[f, c] = new Vector2Int(0, -1); }
+                                else { tetrisTable[f, c] = new Vector2Int(-2, -1); }
+                            }
+                            else
+                            {
+                                tetrisTable[f, c].y = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Active tetromino can't move right!");
+                // -play blocking/stacking sound here-
+            }
+            return moved;
         }
         return false;
     }

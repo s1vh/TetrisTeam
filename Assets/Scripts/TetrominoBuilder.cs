@@ -93,7 +93,11 @@ public class TetrominoBuilder : MonoBehaviour
             }
         }
         if (check) { Debug.Log("Tetromino (" + tetromino + ") has been spawned!"); }
-        else { Debug.Log("There's no space to draw tetromino (" + tetromino + ")"); }
+        else
+        {
+            Debug.Log("(" + this.gameObject.name + ") GAME OVER: there's no space to draw tetromino (" + tetromino + ")");
+            // --start GAME OVER routine HERE--
+        }
         return check;
     }
 }
